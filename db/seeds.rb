@@ -78,3 +78,10 @@ Pokemon.all.each do |pokemon|
     PokemonType.create!(pokemon:, type: assigned_type)
   end
 end
+
+
+puts "Indexing all Pokemons for algolia..."
+
+Pokemon.all.each do |pokemon|
+  pokemon.index!
+end
