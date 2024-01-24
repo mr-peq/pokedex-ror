@@ -33,16 +33,27 @@ class PokemonsController < ApplicationController
     all_types = Type.all.map(&:name)
     excluded_types = params[:not_types].split
     types = all_types - excluded_types
+    pokemons = exclude_pokemons(types, excluded_types)
+
+    pokemons.flatten.uniq.sort_by(&:index)
+  end
+
+  def exclude_pokemons(types, excluded_types)
     pokemons = []
     types.each do |type|
       matching_pokemons = Pokemon.search(type)
       matching_pokemons.each do |pokemon|
-        pokemon_types = pokemon.types.map(&:name)
-        has_excluded_type = pokemon_types & excluded_types
-        pokemons << pokemon unless has_excluded_type.length.positive?
+        pokemons << pokemon unless has_excluded_type?(pokemon, excluded_types)
       end
     end
+    pokemons
+  end
 
-    pokemons.flatten.uniq.sort_by(&:index)
+  def has_excluded_type?(pokemon, excluded_types)
+    pokemon_types = pokemon.types.map(&:name)
+
+    # This line returns ONLY the values contained in BOTH arrays
+    matches = pokemon_types & excluded_types
+    matches.empty? ? false : true
   end
 end
