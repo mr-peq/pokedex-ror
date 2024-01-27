@@ -102,6 +102,8 @@ puts "Creating all Pokemons..."
 def get_sprite(pokemon_name)
   return if pokemon_name.start_with?("Nidoran")
 
+  puts "Getting sprite for #{pokemon_name}"
+
   url = "https://bulbapedia.bulbagarden.net/wiki/#{pokemon_name.gsub(' ', '_')}_(Pokemon)"
   html_file = URI.open(url).read
   html_doc = Nokogiri::HTML.parse(html_file)
@@ -120,6 +122,7 @@ def create_pokemon(content, sprite)
     type = Type.find_by(name: type_name.downcase)
     PokemonType.create!(pokemon:, type:)
   end
+  p name
 end
 
 url = "https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_National_Pok%C3%A9dex_number"
@@ -128,12 +131,15 @@ html_doc = Nokogiri::HTML.parse(html_file)
 
 first_table_rows = html_doc.at("table.roundy tbody").search("tr")
 
-first_table_rows[1..].each_with_index do |row, index|
-  puts "Fetching Pokemon ##{index + 1}"
+first_table_rows[1..].each do |row|
   content = row.content.split("\n").reject(&:empty?)
+  puts "Fetching Pokemon ##{content[0][1..].to_i}: #{content[1]}"
   if content[0].start_with?("#")
     sprite = get_sprite(content[1])
     create_pokemon(content, sprite)
+  else
+    puts "Special Pokemon, skipping"
+    next
   end
 end
 
