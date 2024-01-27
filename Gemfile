@@ -50,3 +50,4 @@ end
 
 gem "algoliasearch-rails"
 gem 'rack-cors'
+gem "nokogiri"

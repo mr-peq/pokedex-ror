@@ -229,6 +229,7 @@ DEPENDENCIES
   debug
   dotenv-rails
   error_highlight (>= 0.4.0)
+  nokogiri
   puma (>= 5.0)
   rack-cors
   rails (~> 7.1.3)
