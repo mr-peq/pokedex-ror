@@ -97,9 +97,11 @@ Type.create!(name: "stellar")
 # end
 
 
-puts "Testing nokogiri..."
+puts "Creating all Pokemons..."
 
 def get_sprite(pokemon_name)
+  return if pokemon_name.start_with?("Nidoran")
+
   url = "https://bulbapedia.bulbagarden.net/wiki/#{pokemon_name}_(Pokemon)"
   html_file = URI.open(url).read
   html_doc = Nokogiri::HTML.parse(html_file)
@@ -108,6 +110,8 @@ def get_sprite(pokemon_name)
 end
 
 def create_pokemon(content, sprite)
+  return if content[1].start_with?("Nidoran")
+
   index = content[0][1..].to_i
   name = content[1]
   types = content[2..]
@@ -124,7 +128,8 @@ html_doc = Nokogiri::HTML.parse(html_file)
 
 first_table_rows = html_doc.at("table.roundy tbody").search("tr")
 
-first_table_rows[1..].each do |row|
+first_table_rows[1..].each_with_index do |row, index|
+  puts "Fetching Pokemon ##{index + 1}"
   content = row.content.split("\n").reject(&:empty?)
   if content[0].start_with?("#")
     sprite = get_sprite(content[1])
