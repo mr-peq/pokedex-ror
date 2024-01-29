@@ -107,7 +107,7 @@ def get_sprite(pokemon_name)
   url = "https://bulbapedia.bulbagarden.net/wiki/#{pokemon_name.gsub(' ', '_')}_(Pokemon)"
   html_file = URI.open(url).read
   html_doc = Nokogiri::HTML.parse(html_file)
-  img = html_doc.at("img").attributes["src"].content
+  img = html_doc.at("table.roundy img").attributes["src"].content
   "https:#{img}"
 end
 
